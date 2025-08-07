@@ -132,97 +132,115 @@ class _ShowAvailableCoursesWidgetState
                 return SliverList(
                   delegate: SliverChildListDelegate([
                     /// Featured course
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0,
-                        vertical: 12,
-                      ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(10),
-                        child: Stack(
-                          children: [
-                            Image.network(
-                              nonEnrolledCourses[0].imageUrl != null
-                                  ? nonEnrolledCourses[0].imageUrl!
-                                  : "https://imgs.search.brave.com/U28_uzPVMomWetZlrjIlA0d0B32pFcxYeKM1GKMOGGY/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5pc3RvY2twaG90/by5jb20vaWQvMTQw/MDA1ODIyOS9waG90/by9wcm9ncmVzcy1i/YXItd2l0aC10aGUt/d29yZHMtbmV3LXNr/aWxsLWxvYWRpbmct/ZWR1Y2F0aW9uLWNv/bmNlcHQtaGF2aW5n/LWEtZ29hbC1vbmxp/bmUtbGVhcm5pbmcu/anBnP3M9NjEyeDYx/MiZ3PTAmaz0yMCZj/PVdkaHZvdWxXQ2th/WTBzNU95U3VKNW9y/VURFblQ1MkxzUHpV/MW51NkdWbXM9",
-                              width: double.infinity,
-                              height: 200,
-                              fit: BoxFit.cover,
-                            ),
-                            Positioned.fill(
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topCenter,
-                                    end: Alignment.bottomCenter,
-                                    colors: [
-                                      Colors.transparent,
-                                      Colors.black.withOpacity(0.6),
+                    (nonEnrolledCourses.isNotEmpty)
+                        ? Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 10.0,
+                            vertical: 12,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(10),
+                            child: Stack(
+                              children: [
+                                Image.network(
+                                  // nonEnrolledCourses[0].imageUrl != null && nonEnrolledCourses[0].imageUrl!.isNotEmpty
+                                  // ?
+                                  nonEnrolledCourses[0].imageUrl!,
+                                  // : "https://imgs.search.brave.com/6uAR6thSuhSUVGjEAgQ2RWvURsGXMKs9IyolxzPGH_Y/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2IzLzM3/LzY0L2IzMzc2NDgx/ZThmOTE3NTZiZmY0/NTg5YTI3MmVhYmYz/LmpwZw",
+                                  width: double.infinity,
+                                  height: 200,
+                                  fit: BoxFit.cover,
+                                  errorBuilder: (
+                                    context,
+                                    error,
+                                    stackTrace,
+                                  ) {
+                                    return Image.asset(
+                                      'assets/images/grad_logo.png',
+                                      width: double.infinity,
+                                      height: 200,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
+                                ),
+
+                                Positioned.fill(
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.transparent,
+                                          Colors.black.withOpacity(
+                                            0.6,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 65,
+                                  left: 15,
+                                  child: Text(
+                                    "Featured",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 40,
+                                  left: 15,
+                                  child: Text(
+                                    nonEnrolledCourses[0].title,
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ),
+                                Positioned(
+                                  bottom: 20,
+                                  left: 15,
+                                  child: Row(
+                                    children: [
+                                      Icon(
+                                        Icons.person_outline,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        "${nonEnrolledCourses[0].enrolledStudents.length} Students",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                                      SizedBox(width: 10),
+                                      Icon(
+                                        Icons.access_time,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ),
+                                      SizedBox(width: 4),
+                                      Text(
+                                        "${calculateWeeksBetween(nonEnrolledCourses[0].startDate, nonEnrolledCourses[0].endDate)} weeks",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                        ),
+                                      ),
                                     ],
                                   ),
                                 ),
-                              ),
+                              ],
                             ),
-                            Positioned(
-                              bottom: 65,
-                              left: 15,
-                              child: Text(
-                                "Featured",
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 40,
-                              left: 15,
-                              child: Text(
-                                nonEnrolledCourses[0].title,
-                                style: TextStyle(
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
-                              ),
-                            ),
-                            Positioned(
-                              bottom: 20,
-                              left: 15,
-                              child: Row(
-                                children: [
-                                  Icon(
-                                    Icons.person_outline,
-                                    color: Colors.white,
-                                    size: 16,
-                                  ),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    "${nonEnrolledCourses[0].enrolledStudents.length} Students",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                  SizedBox(width: 10),
-                                  Icon(
-                                    Icons.access_time,
-                                    color: Colors.white,
-                                    size: 16,
-                                  ),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    "${calculateWeeksBetween(nonEnrolledCourses[0].startDate, nonEnrolledCourses[0].endDate)} weeks",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                          ),
+                        )
+                        : SizedBox(),
 
                     /// Header for recent courses
                     Padding(

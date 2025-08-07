@@ -24,24 +24,25 @@ class _EmailVerificationPageState
   // this method to refresh after verify the email ,
   //  ,Note that i have a timer that its 10 seconds and that means
   // even if you verify the mail in the second 1 , you will wait for 9 seconds to see the ok button
- void _startEmailCheck() {
-  _timer = Timer.periodic(const Duration(seconds: 20), (timer) async {
-    try {
-      await FirebaseAuth.instance.currentUser?.reload();
-      final user = FirebaseAuth.instance.currentUser;
-      if (user != null && user.emailVerified) {
-        setState(() {
-          isVerified = true;
-        });
-        timer.cancel(); // Stop checking once verified
+  void _startEmailCheck() {
+    _timer = Timer.periodic(const Duration(seconds: 20), (
+      timer,
+    ) async {
+      try {
+        await FirebaseAuth.instance.currentUser?.reload();
+        final user = FirebaseAuth.instance.currentUser;
+        if (user != null && user.emailVerified) {
+          setState(() {
+            isVerified = true;
+          });
+          timer.cancel(); // Stop checking once verified
+        }
+      } catch (e) {
+        print('Email check failed: $e');
+        // Next 20 seconds later it will automatically retry.
       }
-    } catch (e) {
-      print('Email check failed: $e');
-      // Next 20 seconds later it will automatically retry.
-    }
-  });
-}
-
+    });
+  }
 
   @override
   void initState() {
@@ -58,18 +59,28 @@ class _EmailVerificationPageState
   void _navigateToDashboard() {
     final user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      if(widget.role=="Trainer"){Navigator.pushReplacement(context,MaterialPageRoute(builder: (context) => TrainerDashboardPage(trainerId: user.uid,),));}
-     else {Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder:
-              (context) => ContinueInfo(
-                role: widget.role,
-                userId: user.uid,
-                email: user.email.toString(),
-              ),
-        ),
-      );}
+      if (widget.role == "Trainer") {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) =>
+                    TrainerDashboardPage(trainerId: user.uid),
+          ),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder:
+                (context) => ContinueInfo(
+                  role: widget.role,
+                  userId: user.uid,
+                  email: user.email.toString(),
+                ),
+          ),
+        );
+      }
     }
   }
 
@@ -86,7 +97,7 @@ class _EmailVerificationPageState
             const Icon(Icons.email, size: 80, color: Colors.blue),
             const SizedBox(height: 20),
             const Text(
-              "We have sent a verification link to your email./n please confirm email and then press OK",
+              "We have sent a verification link to your email.\n please confirm email and then press OK",
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: 18),
             ),

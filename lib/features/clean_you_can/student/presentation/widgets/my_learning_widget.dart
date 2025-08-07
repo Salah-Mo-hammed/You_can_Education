@@ -17,7 +17,9 @@ class MyLearningWidget extends StatelessWidget {
         context
             .read<StudentBloc>()
             .state
-            .availableCourses!['filteredCourses'];
+            .availableCourses!
+            
+            ['filteredCourses'];
     print(
       "*-*-*/-*/-/*-/-*-*-*/-*/-*-*-*--*- $filteredCourses before go to in progress",
     );

@@ -163,7 +163,7 @@ class WithFirebase {
               .where(
                 (entry) =>
                     entry.value is Map &&
-                    (entry.value['status'] ?? '') == 'enrolled',
+                    (entry.value['status'] ?? '') == 'approved',
               )
               .map((entry) => entry.key)
               .toList();
@@ -284,23 +284,28 @@ await NotificationService().notifyCenter(centerId, courseName);
     }
   }
 notifyCenter(){}
+Future<void> sendRequest({
+  required String studentId,
+  required String centerId,
+  required String courseId,
+  required String courseName,
+}) async {
+  try {
+    print("⚙️ sendRequest called");
 
-  Future<void> sendRequest({
-    required String studentId,
-    required String centerId,
-    required String courseId,
-    required String courseName,
-    // required String proofImageUrl,
-  }) async {
-    final requestRef =
-        _firestore.collection('course_enroll_requests').doc();
-    final studentSnap =
-        await _firestore.collection('Students').doc(studentId).get();
+    final requestRef = _firestore.collection('course_enroll_requests').doc();
+    final studentSnap = await _firestore.collection('Students').doc(studentId).get();
+
+    if (!studentSnap.exists) {
+      print("❌ Student document does not exist.");
+      return;
+    }
 
     final studentData = studentSnap.data()!;
     final String studentName = studentData['name'] ?? '';
     final String studentPhone = studentData['phoneNumber'] ?? '';
 
+    print("📤 Sending request to Firestore...");
     await requestRef.set({
       'requestId': requestRef.id,
       'studentId': studentId,
@@ -309,11 +314,46 @@ notifyCenter(){}
       'centerId': centerId,
       'courseId': courseId,
       'courseName': courseName,
-
-      // 'proofImageUrl': proofImageUrl,
       'createdAt': FieldValue.serverTimestamp(),
     });
+
+    print("✅ Request successfully created in Firestore.");
+  } catch (e, stack) {
+    print("❌ Failed to send request: $e");
+    print(stack);
   }
+}
+
+
+  // Future<void> sendRequest({
+  //   required String studentId,
+  //   required String centerId,
+  //   required String courseId,
+  //   required String courseName,
+  //   // required String proofImageUrl,
+  // }) async {
+  //   final requestRef =
+  //       _firestore.collection('course_enroll_requests').doc();
+  //   final studentSnap =
+  //       await _firestore.collection('Students').doc(studentId).get();
+
+  //   final studentData = studentSnap.data()!;
+  //   final String studentName = studentData['name'] ?? '';
+  //   final String studentPhone = studentData['phoneNumber'] ?? '';
+
+  //   await requestRef.set({
+  //     'requestId': requestRef.id,
+  //     'studentId': studentId,
+  //     'studentName': studentName,
+  //     'studentPhone': studentPhone,
+  //     'centerId': centerId,
+  //     'courseId': courseId,
+  //     'courseName': courseName,
+
+  //     // 'proofImageUrl': proofImageUrl,
+  //     'createdAt': FieldValue.serverTimestamp(),
+  //   });
+  // }
 
   Future<Either<Failure, void>> createStudent(
     StudentModel newStudent,

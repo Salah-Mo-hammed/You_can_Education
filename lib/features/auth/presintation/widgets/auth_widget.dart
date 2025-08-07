@@ -161,33 +161,49 @@ class _AuthWidgetState extends State<AuthWidget> {
           if (state is AuthStateLoading) {
             return const Center(child: CircularProgressIndicator());
           }
-          return _authWidget(context);
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: Image.asset(
+                  'assets/images/background_final.png', // Replace with your image path
+                  fit: BoxFit.cover,
+                ),
+              ),
+              _authWidget(context),
+            ],
+          );
         },
       ),
     );
   }
 
   Widget _authWidget(BuildContext context) {
-    return FadeInDown(
-      delay: Duration(milliseconds: 1500),
+    return FadeIn(
+      delay: Duration(milliseconds: 100),
 
       child: Container(
         width: double.infinity,
         decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.center,
-            colors: [
-              AppColors.brown,
-              AppColors.bronze,
-              AppColors.taupe,
-              Color(0xFFBD9B69),
-
-              // Colors.orange[900]!,
-              // Colors.orange[600]!,
-              // Colors.orange[500]!,
-            ],
+          image: DecorationImage(
+            image: AssetImage(
+              "assets/images/bakgroundLogin.png",
+            ), // Your background
+            fit: BoxFit.cover,
           ),
+          // gradient: LinearGradient(
+          //   begin: Alignment.topCenter,
+          //   end: Alignment.center,
+          //   colors: [
+          //     AppColors.brown,
+          //     AppColors.bronze,
+          //     AppColors.taupe,
+          //     Color(0xFFBD9B69),
+
+          //     // Colors.orange[900]!,
+          //     // Colors.orange[600]!,
+          //     // Colors.orange[500]!,
+          //   ],
+          // ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,84 +240,147 @@ class _AuthWidgetState extends State<AuthWidget> {
             ),
             SizedBox(height: 20),
             Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.only(
-                    topRight: Radius.circular(60),
-                    topLeft: Radius.circular(60),
-                  ),
-                ),
-                child: Padding(
-                  padding: EdgeInsets.all(20),
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        SizedBox(height: 40),
-                        FadeInUp(
-                          delay: Duration(milliseconds: 2100),
-                          child: Container(
-                            padding: EdgeInsets.all(20),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  blurRadius: 10,
-                                  offset: Offset(0, 10),
-                                  color: Color.fromRGBO(
-                                    225,
-                                    95,
-                                    27,
-                                    .3,
+              child:
+              //!  if you want to go back to page goes up ,wrap it with container , and put these Container(
+              // decoration: BoxDecoration(
+              //   color: Colors.transparent,
+              //   borderRadius: BorderRadius.only(
+              //     topRight: Radius.circular(60),
+              //     topLeft: Radius.circular(60),
+              //   ),
+              // ),
+              Padding(
+                padding: EdgeInsets.all(20),
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(height: 40),
+                      FadeInUp(
+                        delay: Duration(milliseconds: 2100),
+                        child: Container(
+                          padding: EdgeInsets.all(20),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(25),
+                            color: Colors.transparent,
+                            boxShadow: [
+                              BoxShadow(
+                                blurRadius: 10,
+                                offset: Offset(0, 10),
+                                color: Color.fromRGBO(
+                                  225,
+                                  95,
+                                  27,
+                                  .3,
+                                ),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              _buildRowTextFeild(
+                                Icons.email_outlined,
+                                "email",
+                                emailController,
+                                false,
+                                AppColors.iconEmail,
+                                AppColors.textPrimary,
+                              ),
+                              _buildRowTextFeild(
+                                Icons.lock_outline_rounded,
+                                "password",
+                                passwordController,
+                                true,
+                                AppColors.iconPassword,
+                                AppColors.textPrimary,
+                              ),
+                              SizedBox(height: 50),
+                              _buildActionButton(context),
+
+                              // if (!widget.doRegister)
+                              //   _buildForgetPassword(context),
+                              // SizedBox(height: 5),
+                              // if (!widget.doRegister)
+                              //   _buildSwitchAuthMode(context),
+                              SizedBox(height: 30),
+                              !widget.doRegister
+                                  ? Row(
+                                    children: [
+                                      _buildSocialActionButton(
+                                        "Reset password",
+                                        3000,
+                                        AppColors.resetpass,
+                                        () => Navigator.push(
+                                          context,
+                                          PageRouteBuilder(
+                                            opaque: false,
+                                            transitionDuration:
+                                                Duration(
+                                                  milliseconds: 400,
+                                                ),
+                                            pageBuilder:
+                                                (_, __, ___) =>
+                                                    ForgotPasswordPage(),
+                                            transitionsBuilder: (
+                                              _,
+                                              animation,
+                                              __,
+                                              child,
+                                            ) {
+                                              return FadeTransition(
+                                                opacity: animation,
+                                                child: child,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: 20),
+                                      _buildSocialActionButton(
+                                        "Register",
+                                        3200,
+                                        AppColors.register,
+                                        () => Navigator.push(
+                                          context,
+                                          PageRouteBuilder(
+                                            opaque: false,
+                                            transitionDuration:
+                                                Duration(
+                                                  milliseconds: 400,
+                                                ),
+                                            pageBuilder:
+                                                (_, __, ___) =>
+                                                    const UserTypeSelectionPage(),
+                                            transitionsBuilder: (
+                                              _,
+                                              animation,
+                                              __,
+                                              child,
+                                            ) {
+                                              return FadeTransition(
+                                                opacity: animation,
+                                                child: child,
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  )
+                                  : Row(
+                                    children: [
+                                      _buildSocialActionButton(
+                                        "Go Back",
+                                        3200,
+                                        AppColors.register,
+                                        () => Navigator.pop(context),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              ],
-                            ),
-                            child: Column(
-                              children: [
-                                _buildRowTextFeild(
-                                  Icons.email,
-                                  "email",
-                                  emailController,
-                                  false,
-                                ),
-                                _buildRowTextFeild(
-                                  Icons.lock,
-                                  "password",
-                                  passwordController,
-                                  true,
-                                ),
-                              ],
-                            ),
+                            ],
                           ),
                         ),
-                        SizedBox(height: 50),
-                        _buildActionButton(context),
-
-                        if (!widget.doRegister)
-                          _buildForgetPassword(context),
-                        SizedBox(height: 5),
-                        if (!widget.doRegister)
-                          _buildSwitchAuthMode(context),
-                        SizedBox(height: 30),
-                        Row(
-                          children: [
-                            _buildSocialActionButton(
-                              "GitHup",
-                              3000,
-                              Colors.black,
-                            ),
-                            SizedBox(width: 20),
-                            _buildSocialActionButton(
-                              "Gmail",
-                              3200,
-                              Colors.red[600]!,
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -316,26 +395,28 @@ class _AuthWidgetState extends State<AuthWidget> {
   Expanded _buildSocialActionButton(
     String title,
     int milliseconds,
-    Color color,
+    Gradient gradient, // changed from Color to Gradient
+    VoidCallback onTap,
   ) {
-    return
-    //! Expanded because its inside row , and to avoid exceptions
-    Expanded(
+    return Expanded(
       child: FadeInUp(
         delay: Duration(milliseconds: milliseconds),
-        child: Container(
-          height: 50,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(50),
-            color: color,
-          ),
-          child: Center(
-            child: Text(
-              title,
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 15,
-                fontWeight: FontWeight.bold,
+        child: InkWell(
+          onTap: onTap,
+          child: Container(
+            height: 50,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(50),
+              gradient: gradient,
+            ),
+            child: Center(
+              child: Text(
+                title,
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ),
@@ -349,6 +430,8 @@ class _AuthWidgetState extends State<AuthWidget> {
     String title,
     TextEditingController controller,
     bool isPassword,
+    Color color,
+    Color color2,
   ) {
     return Container(
       padding: EdgeInsets.all(10),
@@ -357,16 +440,19 @@ class _AuthWidgetState extends State<AuthWidget> {
       ),
       child: Row(
         children: [
-          Icon(icon, color: AppColors.bronze),
+          Icon(icon, color: color),
           SizedBox(width: 5),
 
           Expanded(
             child: TextFormField(
+
+              
+              style: TextStyle(color: Colors.white),
               obscureText: isPassword,
               controller: controller,
               keyboardType: TextInputType.emailAddress,
               decoration: InputDecoration(
-                label: Text(title),
+                label: Text(title, style: TextStyle(color: color2)),
                 helperStyle: TextStyle(color: Colors.grey[200]),
                 border: InputBorder.none,
               ),
@@ -411,6 +497,10 @@ class _AuthWidgetState extends State<AuthWidget> {
         : FadeInUp(
           delay: Duration(milliseconds: 2300),
           child: Container(
+            decoration: BoxDecoration(
+              gradient: AppColors.goldGradient,
+              borderRadius: BorderRadius.circular(25),
+            ),
             margin: EdgeInsets.symmetric(
               vertical: 10,
               horizontal: 50,
@@ -418,7 +508,7 @@ class _AuthWidgetState extends State<AuthWidget> {
             width: double.infinity,
             child: ElevatedButton(
               style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.bronze,
+                backgroundColor: Colors.transparent,
                 padding: const EdgeInsets.symmetric(vertical: 14.0),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(50),
@@ -474,43 +564,43 @@ class _AuthWidgetState extends State<AuthWidget> {
     ).showSnackBar(SnackBar(content: Text(message)));
   }
 
-  Widget _buildSwitchAuthMode(BuildContext context) {
-    return FadeInUp(
-      delay: Duration(milliseconds: 2800),
+  // Widget _buildSwitchAuthMode(BuildContext context) {
+  //   return FadeInUp(
+  //     delay: Duration(milliseconds: 2800),
 
-      child: GestureDetector(
-        onTap:
-            () => Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (_) => UserTypeSelectionPage(),
-              ),
-            ),
-        child: FadeInUp(
-          child: Text(
-            "Don't have an account? Register",
-            style: TextStyle(color: Colors.blue),
-          ),
-        ),
-      ),
-    );
-  }
+  //     child: GestureDetector(
+  //       onTap:
+  //           () => Navigator.pushReplacement(
+  //             context,
+  //             MaterialPageRoute(
+  //               builder: (_) => UserTypeSelectionPage(),
+  //             ),
+  //           ),
+  //       child: FadeInUp(
+  //         child: Text(
+  //           "Don't have an account? Register",
+  //           style: TextStyle(color: Colors.blue),
+  //         ),
+  //       ),
+  //     ),
+  //   );
+  // }
 
-  Widget _buildForgetPassword(BuildContext context) {
-    return FadeInUp(
-      delay: Duration(milliseconds: 2500),
+  // Widget _buildForgetPassword(BuildContext context) {
+  //   return FadeInUp(
+  //     delay: Duration(milliseconds: 2500),
 
-      child: GestureDetector(
-        onTap:
-            () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (_) => ForgotPasswordPage()),
-            ),
-        child: Text(
-          "Forgot your password?",
-          style: TextStyle(color: Colors.blue),
-        ),
-      ),
-    );
-  }
+  //     child: GestureDetector(
+  //       onTap:
+  //           () => Navigator.push(
+  //             context,
+  //             MaterialPageRoute(builder: (_) => ForgotPasswordPage()),
+  //           ),
+  //       child: Text(
+  //         "Forgot your password?",
+  //         style: TextStyle(color: Colors.blue),
+  //       ),
+  //     ),
+  //   );
+  // }
 }

@@ -81,12 +81,22 @@ class CommonWidgets {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(7),
                     child: Image.network(
-                      courses[index].imageUrl == null
-                          ? "https://imgs.search.brave.com/yFciH0dtD8HJZlPdobHcujhNe6DDXsC8M8_2AOwakCs/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9kM2Yx/aXlmeHh6OGkxZS5j/bG91ZGZyb250Lm5l/dC9jb3Vyc2VzL2Nv/dXJzZV9pbWFnZS81/YWUwZTA2MjQ0OTMu/anBn"
-                          : courses[index].imageUrl!,
-                      height: 100,
+                      // courses[index].imageUrl != null &&
+                      //         courses[index].imageUrl!.isNotEmpty
+                          // ?
+                           courses[index].imageUrl!,
+                          // :"https://imgs.search.brave.com/6uAR6thSuhSUVGjEAgQ2RWvURsGXMKs9IyolxzPGH_Y/rs:fit:500:0:1:0/g:ce/aHR0cHM6Ly9pLnBp/bmltZy5jb20vb3Jp/Z2luYWxzL2IzLzM3/LzY0L2IzMzc2NDgx/ZThmOTE3NTZiZmY0/NTg5YTI3MmVhYmYz/LmpwZw",
                       width: 90,
+                      height: 100,
                       fit: BoxFit.cover,
+                      errorBuilder: (context, error, stackTrace) {
+                        return Image.asset(
+                          'assets/images/grad_logo.png',
+                          width: 90,
+                          height: 100,
+                          fit: BoxFit.cover,
+                        );
+                      },
                     ),
                   ),
                 ),

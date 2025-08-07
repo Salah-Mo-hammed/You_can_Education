@@ -93,42 +93,109 @@ class AuthDataSource {
   }
   //! done register func
 
+  // Future<Either<Failure, UserModel>> registerUser(
+  //   String emailAddress,
+  //   String password,
+  //   String role,
+  // ) async {
+  //   try {
+  //     UserCredential credential = await _firebaseAuth
+  //         .createUserWithEmailAndPassword(
+  //           email: emailAddress,
+  //           password: password,
+  //         );
+
+  //     await _firestore
+  //         .collection('Users')
+  //         .doc(credential.user!.uid)
+  //         .set({
+  //           'email': emailAddress,
+  //           'userId': credential.user!.uid,
+  //           'role': role,
+  //           'isCompletedInfo': false,
+  //         });
+  //     final user = credential.user;
+  //     if (user == null) {
+  //       return Left(AuthFailure("User registration failed."));
+  //     }
+
+  //     await credential.user?.sendEmailVerification();
+
+  //     DocumentSnapshot userDoc =
+  //         await _firestore.collection('Users').doc(user.uid).get();
+  //     if (!userDoc.exists) {
+  //       return Left(AuthFailure("User Data Not Found"));
+  //     }
+  //     final userData = userDoc.data() as Map<String, dynamic>;
+  //     final fetchData = userData['role'] ?? 'student';
+  //     // انا عملت هيك (اني عملت استدعاء لل الرول من فايرسنور وما ارسلت ال باراميتر رول في الميثود هاي عشان امان اكثر , لو صار تسجيل صح يمكن اصلا ما يتم التخزين صح , لو بدك اداء اسرع خلي ال باراميتر تاع الميثود هو في ال يوسر مودل ريترن رايت الي تحت هاد)
+  //     return Right(
+  //       UserModel(
+  //         uid: user.uid,
+  //         email: user.email ?? "",
+  //         isVerified: user.emailVerified,
+  //         role: fetchData,
+  //         isCompletedInfo: role == "Trainers" ? true : false,
+  //       ),
+  //     );
+  //   } on FirebaseAuthException catch (e) {
+  //     String message = e.code;
+  //     if (e.code == 'weak-password') {
+  //       message = "The password provided is too weak.";
+  //     } else if (e.code == 'email-already-in-use') {
+  //       message = 'An account already exists with that email.';
+  //     }
+  //     return Left(AuthFailure(message));
+  //   }
+  // }
   Future<Either<Failure, UserModel>> registerUser(
     String emailAddress,
     String password,
     String role,
   ) async {
     try {
+      print(
+        '*************************************************************************************************************************************************************************************************************************************************************************************************************************************in register user Method ',
+      );
+      // Create the user
       UserCredential credential = await _firebaseAuth
           .createUserWithEmailAndPassword(
             email: emailAddress,
             password: password,
           );
 
-      await _firestore
-          .collection('Users')
-          .doc(credential.user!.uid)
-          .set({
-            'email': emailAddress,
-            'userId': credential.user!.uid,
-            'role': role,
-            'isCompletedInfo': false,
-          });
       final user = credential.user;
       if (user == null) {
         return Left(AuthFailure("User registration failed."));
       }
 
-      await credential.user?.sendEmailVerification();
+      // Save user data in Firestore
+      await _firestore.collection('Users').doc(user.uid).set({
+        'email': emailAddress,
+        'userId': user.uid,
+        'role': role,
+        'isCompletedInfo': false,
+      });
 
+      // Send email verification
+      try {
+        await user.sendEmailVerification();
+        print("✅ Email verification sent to ${user.email}");
+      } catch (e) {
+        print("❌ Failed to send email verification: $e");
+      }
+
+      // Fetch user data from Firestore
       DocumentSnapshot userDoc =
           await _firestore.collection('Users').doc(user.uid).get();
+
       if (!userDoc.exists) {
         return Left(AuthFailure("User Data Not Found"));
       }
+
       final userData = userDoc.data() as Map<String, dynamic>;
       final fetchData = userData['role'] ?? 'student';
-      // انا عملت هيك (اني عملت استدعاء لل الرول من فايرسنور وما ارسلت ال باراميتر رول في الميثود هاي عشان امان اكثر , لو صار تسجيل صح يمكن اصلا ما يتم التخزين صح , لو بدك اداء اسرع خلي ال باراميتر تاع الميثود هو في ال يوسر مودل ريترن رايت الي تحت هاد)
+
       return Right(
         UserModel(
           uid: user.uid,
